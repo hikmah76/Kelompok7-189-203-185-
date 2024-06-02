@@ -1,0 +1,235 @@
+<!-- admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container mt-5">
+    <h1>Admin Dashboard</h1>
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="members-tab" data-bs-toggle="tab" data-bs-target="#members" type="button" role="tab" aria-controls="members" aria-selected="true">Manage Members</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="books-tab" data-bs-toggle="tab" data-bs-target="#books" type="button" role="tab" aria-controls="books" aria-selected="false">Manage Books</button>
+      </li>
+    </ul>
+    <div class="tab-content" id="myTabContent">
+      <div class="tab-pane fade show active" id="members" role="tabpanel" aria-labelledby="members-tab">
+        <h2>Members</h2>
+        <!-- CRUD operations for members -->
+        <button class="btn btn-success mb-3" onclick="showAddMemberModal()">Add Member</button>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="membersTable">
+            <!-- Members data will be populated here -->
+          </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="books" role="tabpanel" aria-labelledby="books-tab">
+        <h2>Books</h2>
+        <!-- CRUD operations for books -->
+        <button class="btn btn-success mb-3" onclick="showAddBookModal()">Add Book</button>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="booksTable">
+            <!-- Books data will be populated here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modals for adding members and books -->
+  <div class="modal fade" id="addMemberModal" tabindex="-1" aria-labelledby="addMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addMemberModalLabel">Add Member</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addMemberForm">
+            <div class="mb-3">
+              <label for="memberName" class="form-label">Name</label>
+              <input type="text" class="form-control" id="memberName" required>
+            </div>
+            <div class="mb-3">
+              <label for="memberEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="memberEmail" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="addBookModal" tabindex="-1" aria-labelledby="addBookModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addBookModalLabel">Add Book</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="addBookForm">
+            <div class="mb-3">
+              <label for="bookTitle" class="form-label">Title</label>
+              <input type="text" class="form-control" id="bookTitle" required>
+            </div>
+            <div class="mb-3">
+              <label for="bookAuthor" class="form-label">Author</label>
+              <input type="text" class="form-control" id="bookAuthor" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzOgGO+H9fX2yjw9e/gmrtWtM11E83mrUAH2GgbVYBgg" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzOgGO+H9fX2yjw9e/gmrtWtM11E83mrUAH2GgbVYBgg" crossorigin="anonymous"></script>
+  <script>
+    // Example data
+    const members = [
+      { id: 1, name: 'John Doe', email: 'john@example.com' },
+      { id: 2, name: 'Jane Smith', email: 'jane@example.com' }
+    ];
+
+    const books = [
+      { id: 1, title: 'JavaScript for Beginners', author: 'John Doe' },
+      { id: 2, title: 'Advanced CSS Techniques', author: 'Jane Smith' }
+    ];
+
+    // Populate members table
+    function populateMembersTable() {
+      const membersTable = document.getElementById('membersTable');
+      membersTable.innerHTML = '';
+      members.forEach(member => {
+        const row = `
+          <tr>
+            <td>${member.id}</td>
+            <td>${member.name}</td>
+            <td>${member.email}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editMember(${member.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteMember(${member.id})">Delete</button>
+            </td>
+          </tr>
+        `;
+        membersTable.insertAdjacentHTML('beforeend', row);
+      });
+    }
+
+    // Populate books table
+    function populateBooksTable() {
+      const booksTable = document.getElementById('booksTable');
+      booksTable.innerHTML = '';
+      books.forEach(book => {
+        const row = `
+          <tr>
+            <td>${book.id}</td>
+            <td>${book.title}</td>
+            <td>${book.author}</td>
+            <td>
+              <button class="btn btn-warning btn-sm" onclick="editBook(${book.id})">Edit</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteBook(${book.id})">Delete</button>
+            </td>
+          </tr>
+        `;
+        booksTable.insertAdjacentHTML('beforeend', row);
+      });
+    }
+
+    // Show add member modal
+    function showAddMemberModal() {
+      const addMemberModal = new bootstrap.Modal(document.getElementById('addMemberModal'));
+      addMemberModal.show();
+    }
+
+    // Show add book modal
+    function showAddBookModal() {
+      const addBookModal = new bootstrap.Modal(document.getElementById('addBookModal'));
+      addBookModal.show();
+    }
+
+    // Add member
+    document.getElementById('addMemberForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const name = document.getElementById('memberName').value;
+      const email = document.getElementById('memberEmail').value;
+      const newMember = { id: members.length + 1, name, email };
+      members.push(newMember);
+      populateMembersTable();
+      const addMemberModal = bootstrap.Modal.getInstance(document.getElementById('addMemberModal'));
+      addMemberModal.hide();
+    });
+
+    // Add book
+    document.getElementById('addBookForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const title = document.getElementById('bookTitle').value;
+      const author = document.getElementById('bookAuthor').value;
+      const newBook = { id: books.length + 1, title, author };
+      books.push(newBook);
+      populateBooksTable();
+      const addBookModal = bootstrap.Modal.getInstance(document.getElementById('addBookModal'));
+      addBookModal.hide();
+    });
+
+    // Edit member
+    function editMember(id) {
+      // Implement edit member logic
+      alert(`Edit member with ID ${id}`);
+    }
+
+    // Delete member
+    function deleteMember(id) {
+      const memberIndex = members.findIndex(member => member.id === id);
+      if (memberIndex !== -1) {
+        members.splice(memberIndex, 1);
+        populateMembersTable();
+      }
+    }
+
+    // Edit book
+    function editBook(id) {
+      // Implement edit book logic
+      alert(`Edit book with ID ${id}`);
+    }
+
+    // Delete book
+    function deleteBook(id) {
+      const bookIndex = books.findIndex(book => book.id === id);
+      if (bookIndex !== -1) {
+        books.splice(bookIndex, 1);
+        populateBooksTable();
+      }
+    }
+
+    // Initial population of tables
+    populateMembersTable();
+    populateBooksTable();
+  </script>
+</body>
+</html>
